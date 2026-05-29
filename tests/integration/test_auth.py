@@ -52,7 +52,7 @@ async def test_login_senha_errada(client):
 @pytest.mark.asyncio
 async def test_rota_sem_token(client):
     r = await client.get("/usuarios/me")
-    assert r.status_code == 403
+    assert r.status_code == 401
 
 
 @pytest.mark.asyncio
