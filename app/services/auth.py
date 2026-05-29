@@ -1,20 +1,19 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-security    = HTTPBearer()
+security = HTTPBearer()
 
 
 def hash_senha(senha: str) -> str:
-    return pwd_context.hash(senha)
+    return bcrypt.hashpw(senha.encode(), bcrypt.gensalt()).decode()
 
 
-def verificar_senha(senha: str, hash: str) -> bool:
-    return pwd_context.verify(senha, hash)
+def verificar_senha(senha: str, hash_str: str) -> bool:
+    return bcrypt.checkpw(senha.encode(), hash_str.encode())
 
 
 def criar_token(usuario_id: int, email: str) -> str:
