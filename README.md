@@ -1,151 +1,121 @@
 # Task Manager API
 
-API REST completa para gerenciamento de tarefas, desenvolvida com **FastAPI**, **PostgreSQL**, **Docker** e autenticação **JWT**.
+A production-ready RESTful API for task management, built with FastAPI, PostgreSQL, Docker, and JWT authentication. The project follows modern backend development practices, including asynchronous database operations, automated testing, database migrations, and CI/CD integration.
 
-## Tecnologias
+## Technologies
 
-- **FastAPI** — framework web assíncrono
-- **PostgreSQL** — banco de dados relacional
-- **SQLAlchemy** (async) — ORM
-- **Alembic** — migrations de banco
-- **JWT** — autenticação stateless
-- **Docker + Docker Compose** — containerização
-- **pytest** — testes automatizados
-- **GitHub Actions** — CI/CD
+* **FastAPI** — High-performance asynchronous web framework
+* **PostgreSQL** — Relational database management system
+* **SQLAlchemy (Async)** — Asynchronous ORM
+* **Alembic** — Database migration management
+* **JWT** — Stateless authentication and authorization
+* **Docker & Docker Compose** — Containerization and orchestration
+* **Pytest** — Automated testing framework
+* **GitHub Actions** — Continuous Integration and Deployment (CI/CD)
 
-## Funcionalidades
+## Features
 
-- Registro e login de usuários com JWT
-- CRUD completo de tarefas
-- Filtros por status, prioridade e conclusão
-- Paginação de resultados
-- Proteção de rotas (BOLA — cada usuário só acessa suas tarefas)
-- Testes de integração com cobertura
+* User registration and authentication with JWT
+* Full CRUD operations for task management
+* Filtering by status, priority, and completion state
+* Pagination support for scalable data retrieval
+* Route protection and user-based resource ownership (BOLA prevention)
+* Integration tests with coverage reporting
+* Modular and scalable architecture
 
-## Como rodar
+## Getting Started
 
-### Com Docker (recomendado)
+### Using Docker (Recommended)
 
 ```bash
-# 1. Clone o repositório
 git clone https://github.com/GabrielBorges240/task-manager-api.git
 cd task-manager-api
 
-# 2. Suba os containers
 docker-compose up -d
 
-# 3. Rode as migrations
 docker-compose exec api alembic upgrade head
-
-# 4. Acesse a documentação
-# http://localhost:8000/docs
 ```
 
-### Sem Docker
+API Documentation:
+
+```text
+http://localhost:8000/docs
+```
+
+### Local Development
 
 ```bash
-# 1. Crie o ambiente virtual
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
 
-# 2. Instale as dependências
+# Linux / macOS
+source venv/bin/activate
+
+# Windows
+venv\Scripts\activate
+
 pip install -r requirements.txt
 
-# 3. Configure as variáveis de ambiente
 cp .env.example .env
-# edite o .env com suas credenciais
 
-# 4. Rode as migrations
 alembic upgrade head
 
-# 5. Inicie a API
 uvicorn app.main:app --reload
 ```
 
-## Endpoints
+## API Endpoints
 
-### Autenticação
+### Authentication
 
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| POST | `/auth/registro` | Criar nova conta |
-| POST | `/auth/login` | Fazer login e obter token |
+| Method | Endpoint         | Description                             |
+| ------ | ---------------- | --------------------------------------- |
+| POST   | `/auth/register` | Create a new account                    |
+| POST   | `/auth/login`    | Authenticate and obtain an access token |
 
-### Usuários
+### Users
 
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| GET | `/usuarios/me` | Ver meu perfil |
-| PATCH | `/usuarios/me` | Atualizar meu perfil |
+| Method | Endpoint    | Description                   |
+| ------ | ----------- | ----------------------------- |
+| GET    | `/users/me` | Retrieve current user profile |
+| PATCH  | `/users/me` | Update current user profile   |
 
-### Tarefas
+### Tasks
 
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| POST | `/tarefas` | Criar tarefa |
-| GET | `/tarefas` | Listar minhas tarefas |
-| GET | `/tarefas/{id}` | Buscar tarefa por ID |
-| PATCH | `/tarefas/{id}` | Atualizar tarefa |
-| DELETE | `/tarefas/{id}` | Deletar tarefa |
+| Method | Endpoint      | Description         |
+| ------ | ------------- | ------------------- |
+| POST   | `/tasks`      | Create a new task   |
+| GET    | `/tasks`      | Retrieve user tasks |
+| GET    | `/tasks/{id}` | Get a task by ID    |
+| PATCH  | `/tasks/{id}` | Update a task       |
+| DELETE | `/tasks/{id}` | Delete a task       |
 
-#### Query params disponíveis em GET /tarefas
-
-- `pagina` — número da página (default: 1)
-- `limite` — itens por página (default: 20, max: 100)
-- `status` — `pendente` | `em_progresso` | `concluida`
-- `prioridade` — `baixa` | `media` | `alta`
-- `concluida` — `true` | `false`
-
-## Exemplo de uso
+## Testing
 
 ```bash
-# Registrar
-curl -X POST http://localhost:8000/auth/registro \
-  -H "Content-Type: application/json" \
-  -d '{"nome": "Ana", "email": "ana@exemplo.com", "senha": "senha123"}'
-
-# Login
-curl -X POST http://localhost:8000/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "ana@exemplo.com", "senha": "senha123"}'
-
-# Criar tarefa (use o token retornado no login)
-curl -X POST http://localhost:8000/tarefas \
-  -H "Authorization: Bearer SEU_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"titulo": "Estudar FastAPI", "prioridade": "alta"}'
-```
-
-## Testes
-
-```bash
-pip install aiosqlite pytest-asyncio
 pytest tests/ -v --cov=app --cov-report=term-missing
 ```
 
-## Estrutura do projeto
+## Project Structure
 
-```
+```text
 task-manager-api/
 ├── app/
-│   ├── main.py           # ponto de entrada
-│   ├── config.py         # variáveis de ambiente
-│   ├── database.py       # conexão assíncrona
-│   ├── models/           # tabelas do banco
-│   ├── schemas/          # validação Pydantic
-│   ├── repositories/     # acesso ao banco
-│   ├── routers/          # rotas HTTP
-│   └── services/         # lógica (auth, JWT)
+│   ├── main.py
+│   ├── config.py
+│   ├── database.py
+│   ├── models/
+│   ├── schemas/
+│   ├── repositories/
+│   ├── routers/
+│   └── services/
 ├── tests/
-│   ├── conftest.py       # fixtures
-│   └── integration/      # testes de API
-├── alembic/              # migrations
+├── alembic/
 ├── Dockerfile
 ├── docker-compose.yml
-└── .github/workflows/    # CI/CD
+└── .github/workflows/
 ```
 
-## Autor
+## Author
 
-Gabriel Borges — [@GabrielBorges240](https://github.com/GabrielBorges240)
+**Gabriel Borges**
+
+Backend Developer focused on scalable APIs, software architecture, and AI-powered applications.
